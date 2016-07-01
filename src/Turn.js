@@ -113,6 +113,27 @@ class Turn {
     return nextTurn
   }
 
+  dirForPos (i, j) {
+    const width = this.board[0].length
+    const height = this.board.length
+
+    // get minimum distance to board border for each axis
+    const ci = Math.min(i + 1, height - i)
+    const cj = Math.min(j + 1, width - j)
+
+    let dir
+    if (ci < cj) {
+      // i is closer to edge
+      if (i < height / 2) dir = C.DOWN
+      else dir = C.UP
+    } else {
+      // j is closer to edge
+      if (j < width / 2) dir = C.RIGHT
+      else dir = C.LEFT
+    }
+    return dir
+  }
+
   addPlayer (bikeId) {
     let i = -1
     let j = -1
@@ -121,7 +142,7 @@ class Turn {
       j = Math.floor(Math.random() * this.board[0].length)
     }
 
-    const dir = Math.floor(Math.random() * 4)
+    const dir = this.dirForPos(i, j)
     const bike = { i, j, dir, alive: true }
     this.bikes[bikeId] = bike
     this.board[i][j] = bikeId + 1

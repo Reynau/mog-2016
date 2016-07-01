@@ -237,7 +237,9 @@ test('Game :: tick', (t) => {
   game.onPlayerJoin(socket2)
 
   const oldTurn = game.turn
+  console.log(game.players)
   game.tick()
+  console.log(game.players)
   t.notEqual(game.turn, oldTurn, 'should update `this.turn` ref')
   t.equal(game.turns[1], game.turn, 'turn should be last turn in turns array')
   t.equal(game.turns.length, 2, 'should push new turn into turns array')

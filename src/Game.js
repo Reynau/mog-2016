@@ -33,14 +33,39 @@ class Game {
     this.sockets[bikeId] = null
   }
 
-  tick () {
+  gameHasStarted () {
+    return this.turns.length > 1
+  }
+
+  gameCanStart () {
     let nplayers = 0
     this.sockets.forEach((socket) => socket && ++nplayers)
-    if (nplayers < 2) return
-    const nextTurn = this.turn.evolve()
-    this.turns.push(nextTurn)
-    this.turn = nextTurn
-    this.sendState()
+    return (nplayers >= 2)
+  }
+
+  gameShouldRestart () {
+    let nplayers = 0
+    this.turn.bikes.forEach((bike) => bike && bike.alive && ++nplayers)
+    return (nplayers < 2)
+  }
+
+  tick () {
+    if (this.gameHasStarted() && this.gameShouldRestart()) {
+      const board = this.turn.board.map((row) => row.map((col) => 0))
+      this.turn = new Turn(board, [], [])
+      this.turns = [this.turn]
+      this.sockets.forEach((socket, playerId) => {
+        if (socket) {
+          this.players[socket.id] = playerId
+          this.turn.addPlayer(playerId)
+        }
+      })
+    } else if (this.gameCanStart() || this.gameHasStarted()) {
+      const nextTurn = this.turn.evolve()
+      this.turns.push(nextTurn)
+      this.turn = nextTurn
+      this.sendState()
+    }
   }
 
   sendState () {
