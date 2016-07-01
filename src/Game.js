@@ -12,10 +12,10 @@ class Game {
 
   onPlayerJoin (socket) {
     let bikeId = 0
-    while (this.sockets[bikeId] != null ||
-      this.turn.inputs[bikeId] != null) ++bikeId
+    while (this.sockets[bikeId] != null) ++bikeId
     this.sockets[bikeId] = socket
     this.players[socket.id] = bikeId
+    if (this.turns.length > 1) return
     this.turn.addPlayer(bikeId)
     this.sendState()
   }
@@ -34,6 +34,9 @@ class Game {
   }
 
   tick () {
+    let nplayers = 0
+    this.sockets.forEach((socket) => socket && ++nplayers)
+    if (nplayers < 2) return
     const nextTurn = this.turn.evolve()
     this.turns.push(nextTurn)
     this.turn = nextTurn
