@@ -55,6 +55,8 @@ const DIR_FOR_KEY = {
 document.addEventListener('keydown', function (e) {
   const dir = DIR_FOR_KEY[e.keyCode]
   if (dir == null) return
+  let playerId = game.sockets[socket.id]
+  players[playerId].dir = dir
   const turnIndex = game.turns.length - 1
   socket.emit('changeDir', dir, turnIndex)
 })
