@@ -55,7 +55,7 @@ class Turn {
     const collisions = {}
 
     bikes.forEach((bike, i) => {
-      if (!bike.alive) return
+      if (bike == null || !bike.alive) return
 
       const input = inputs[i]
       if (input === C.SELF_DESTRUCT) {
@@ -103,6 +103,7 @@ class Turn {
     // move bikes on the board, remove dead bikes
     const oldBikes = this.bikes
     bikes.forEach((bike, i) => {
+      if (!bike) return
       if (bike.alive) board[bike.i][bike.j] = i + 1
       else {
         const oldBike = oldBikes[i]

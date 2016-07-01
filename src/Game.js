@@ -55,10 +55,8 @@ class Game {
       this.turn = new Turn(board, [], [])
       this.turns = [this.turn]
       this.sockets.forEach((socket, playerId) => {
-        if (socket) {
-          this.players[socket.id] = playerId
-          this.turn.addPlayer(playerId)
-        }
+        if (socket) this.turn.addPlayer(playerId)
+        else this.turn.bikes[playerId] = null
       })
     } else if (this.gameCanStart() || this.gameHasStarted()) {
       const nextTurn = this.turn.evolve()
